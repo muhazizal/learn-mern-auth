@@ -1,9 +1,8 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-const UserModel = require("../models/userModel");
-const UserAuth = require("../middleware/userAuth");
+const UserModel = require("../models/UserModel");
+const userAuth = require("../middleware/userAuth");
 
 // Register new user
 router.post("/register", async (req, res) => {
@@ -39,7 +38,7 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Store new user to MongoDB
+    // Store new user to database
     const newUser = new UserModel({
       email,
       password: passwordHash,
@@ -91,10 +90,15 @@ router.post("/login", async (req, res) => {
 });
 
 // Delete user logged in
-router.delete("/delete", UserAuth, async (req, res) => {
+router.delete("/delete", userAuth, async (req, res) => {
   try {
     // Check user exist and delete user
-    const deletedUser = await UserModel.findOneAndDelete(req.user);
+    const deletedUser = await UserModel.findByIdAndDelete(req.user);
+
+    if (!deletedUser) {
+      res.status(400).json({ message: "There is no user to delete" });
+    }
+
     res.json(deletedUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -123,6 +127,25 @@ router.post("/isTokenValid", async (req, res) => {
     }
 
     res.json(true);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get logged in user data
+router.get("/", userAuth, async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user);
+
+    // Check user exist
+    if (!user) {
+      res.status(400).json({ message: "User id not valid" });
+    }
+
+    res.json({
+      displayName: user.displayName,
+      id: user._id,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
