@@ -7,9 +7,6 @@ import Typography from "@material-ui/core/Typography";
 import AuthOptions from "./AuthOptions";
 
 const useStyles = makeStyles(() => ({
-  root: {
-    flexGrow: 1,
-  },
   title: {
     flexGrow: 1,
     fontSize: 20,
@@ -25,17 +22,15 @@ export default function TheHeader() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <AppBar position='static'>
-        <Toolbar>
-          <Typography variant='h1' className={classes.title}>
-            <Link to='/' className={classes.link}>
-              Todo App
-            </Link>
-          </Typography>
-          <AuthOptions />
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar position='static'>
+      <Toolbar>
+        <Typography variant='h1' className={classes.title}>
+          <Link to='/' className={classes.link}>
+            Todo App
+          </Link>
+        </Typography>
+        <AuthOptions />
+      </Toolbar>
+    </AppBar>
   );
 }

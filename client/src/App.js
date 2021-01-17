@@ -1,6 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -10,7 +12,18 @@ import UserAxios from "./plugins/userAxios";
 
 import "./styles/style-reset.css";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  container: {
+    paddingTop: theme.spacing(3),
+  },
+}));
+
 export default function App() {
+  const classes = useStyles();
+
   // Set userData and setUserData hooks state
   const [userData, setUserData] = useState({
     token: undefined,
@@ -57,12 +70,19 @@ export default function App() {
     <>
       <BrowserRouter>
         <UserContext.Provider value={{ userData, setUserData }}>
-          <TheHeader />
-          <Switch>
-            <Route exact path='/' component={Home} />
-            <Route path='/login' component={Login} />
-            <Route path='/register' component={Register} />
-          </Switch>
+          <div className={classes.root}>
+            <TheHeader />
+
+            <main>
+              <Container fixed className={classes.container}>
+                <Switch>
+                  <Route exact path='/' component={Home} />
+                  <Route path='/login' component={Login} />
+                  <Route path='/register' component={Register} />
+                </Switch>
+              </Container>
+            </main>
+          </div>
         </UserContext.Provider>
       </BrowserRouter>
     </>

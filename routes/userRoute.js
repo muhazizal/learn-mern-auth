@@ -45,6 +45,7 @@ router.post("/register", async (req, res) => {
       displayName,
     });
     const savedUser = await newUser.save();
+
     res.json(savedUser);
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -80,7 +81,6 @@ router.post("/login", async (req, res) => {
       token,
       user: {
         id: user._id,
-        email: user.email,
         displayName: user.displayName,
       },
     });
